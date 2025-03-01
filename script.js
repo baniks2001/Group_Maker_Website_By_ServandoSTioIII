@@ -22,7 +22,7 @@ document.querySelectorAll('input[name="inputMethod"]').forEach((radio) => {
   });
 });
 
-function shuffleNames() {
+async function shuffleNames() {
   const groupSize = parseInt(document.getElementById('groupSize').value);
   if (isNaN(groupSize) || groupSize <= 0) {
     alert('Please enter a valid group size.');
@@ -43,7 +43,43 @@ function shuffleNames() {
     }
   }
 
-  // Shuffle the names array 5 times for better randomization
+  // Play heartbeat sound
+  const heartbeatSound = document.getElementById('heartbeatSound');
+  heartbeatSound.play();
+
+  // Show shuffling animation for 10 seconds
+  const shufflingDuration = 10000; // 10 seconds
+  const startTime = Date.now();
+
+  const groupsTableBody = document.getElementById('groupsTableBody');
+  groupsTableBody.innerHTML = ''; // Clear previous results
+
+  // Display shuffling animation
+  while (Date.now() - startTime < shufflingDuration) {
+    const shuffledNames = shuffleArray([...names]); // Shuffle a copy of the names
+    groupsTableBody.innerHTML = ''; // Clear previous animation frame
+
+    // Display shuffled names in the table
+    for (let i = 0; i < shuffledNames.length; i += groupSize) {
+      const group = shuffledNames.slice(i, i + groupSize);
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>Group ${i / groupSize + 1}</td>
+        <td>Shuffling...</td>
+        <td>${group.join(', ')}</td>
+      `;
+      groupsTableBody.appendChild(row);
+    }
+
+    // Wait for a short time before the next animation frame
+    await new Promise((resolve) => setTimeout(resolve, 100));
+  }
+
+  // Stop heartbeat sound
+  heartbeatSound.pause();
+  heartbeatSound.currentTime = 0;
+
+  // Final shuffle and display groups
   for (let i = 0; i < 5; i++) {
     names = shuffleArray(names);
   }
