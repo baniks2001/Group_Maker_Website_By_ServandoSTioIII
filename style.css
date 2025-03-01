@@ -1,0 +1,80 @@
+/* Custom Styles */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #121212; /* Dark background */
+  color: #e0e0e0; /* Light text */
+}
+
+/* Textarea Styling */
+textarea {
+  background-color: #2c2c2c; /* Dark background */
+  color: #e0e0e0; /* Light text */
+  border: 1px solid #444; /* Subtle border */
+}
+
+textarea:focus {
+  background-color: #2c2c2c;
+  color: #e0e0e0;
+  border-color: #007bff; /* Highlight border on focus */
+}
+
+/* Container Padding for Smaller Screens */
+.container {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+/* Card Styling */
+.card {
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  background-color: #1e1e1e; /* Dark card background */
+  border: 1px solid #444; /* Subtle border */
+}
+
+/* Group Boxes */
+.group {
+  background-color: #2c2c2c; /* Dark group background */
+  border: 1px solid #444; /* Subtle border */
+  border-radius: 12px; /* Rounded corners */
+  padding: 15px;
+  margin-bottom: 15px;
+  color: #e0e0e0; /* Light text */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.group:hover {
+  transform: translateY(-5px); /* Lift effect on hover */
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4); /* Enhanced shadow on hover */
+}
+
+.group strong {
+  color: #007bff; /* Accent color for group headers */
+  font-size: 1.1em;
+}
+
+/* Developed by Text */
+.developed-by {
+  font-size: 0.9em;
+  color: #888; /* Lighter color */
+  margin-top: -10px; /* Adjust spacing */
+}
+
+/* Responsive Design Adjustments */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 1.75rem; /* Smaller title on mobile */
+  }
+
+  .developed-by {
+    font-size: 0.8em; /* Smaller text on mobile */
+  }
+
+  .btn {
+    width: 100%; /* Full-width buttons on mobile */
+    margin-bottom: 10px;
+  }
+
+  .group {
+    padding: 10px; /* Smaller padding on mobile */
+  }
+}
