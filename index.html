@@ -68,6 +68,25 @@
       </div>
     </div>
   </div>
+
+  <!-- Bootstrap Modal for "Not Allowed" Message -->
+  <div class="modal fade" id="notAllowedModal" tabindex="-1" aria-labelledby="notAllowedModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content bg-dark text-light">
+        <div class="modal-header">
+          <h5 class="modal-title" id="notAllowedModalLabel">Access Denied</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>You are not allowed to open developer tools on this website.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <!-- jsPDF Library -->
@@ -113,8 +132,9 @@
       }
 
       if (devToolsOpened) {
-        // Redirect to a "Not Allowed" page
-        window.location.href = 'not-allowed.html';
+        // Show the "Not Allowed" modal
+        const notAllowedModal = new bootstrap.Modal(document.getElementById('notAllowedModal'));
+        notAllowedModal.show();
       }
     }, 1000);
   </script>
