@@ -5,24 +5,6 @@ document.getElementById('saveBtn').addEventListener('click', saveGroups);
 let names = [];
 let groups = [];
 let groupLeaders = []; // Array to store group leaders
-// Disable right-click
-document.addEventListener('contextmenu', (e) => e.preventDefault());
-let windowWidth = window.innerWidth;
-let windowHeight = window.innerHeight;
-
-window.addEventListener('resize', () => {
-  if (window.innerWidth !== windowWidth || window.innerHeight !== windowHeight) {
-    alert('Developer tools are not allowed.');
-    window.location.href = '/'; // Redirect to home page or close the page
-  }
-});
-// Disable developer tools shortcuts
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I')) {
-    e.preventDefault();
-    alert('Developer tools are disabled.');
-  }
-});
 
 // Toggle between file upload and manual input
 document.querySelectorAll('input[name="inputMethod"]').forEach((radio) => {
