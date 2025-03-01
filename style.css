@@ -31,25 +31,23 @@ textarea:focus {
   border: 1px solid #444; /* Subtle border */
 }
 
-/* Group Boxes */
-.group {
-  background-color: #2c2c2c; /* Dark group background */
-  border: 1px solid #444; /* Subtle border */
-  border-radius: 12px; /* Rounded corners */
-  padding: 15px;
-  margin-bottom: 15px;
+/* Table Styling */
+.table-dark {
+  background-color: #2c2c2c; /* Dark table background */
   color: #e0e0e0; /* Light text */
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.group:hover {
-  transform: translateY(-5px); /* Lift effect on hover */
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4); /* Enhanced shadow on hover */
+.table-striped tbody tr:nth-of-type(odd) {
+  background-color: #3c3c3c; /* Alternate row color */
 }
 
-.group strong {
-  color: #007bff; /* Accent color for group headers */
-  font-size: 1.1em;
+.table-bordered {
+  border: 1px solid #444; /* Table border */
+}
+
+.table-bordered th,
+.table-bordered td {
+  border: 1px solid #444; /* Cell borders */
 }
 
 /* Developed by Text */
@@ -72,9 +70,5 @@ textarea:focus {
   .btn {
     width: 100%; /* Full-width buttons on mobile */
     margin-bottom: 10px;
-  }
-
-  .group {
-    padding: 10px; /* Smaller padding on mobile */
   }
 }
