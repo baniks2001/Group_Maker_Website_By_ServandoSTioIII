@@ -4,6 +4,7 @@ document.getElementById('saveBtn').addEventListener('click', saveGroups);
 
 let names = [];
 let groups = [];
+let groupLeaders = []; // Array to store group leaders
 
 // Toggle between file upload and manual input
 document.querySelectorAll('input[name="inputMethod"]').forEach((radio) => {
@@ -23,7 +24,7 @@ document.querySelectorAll('input[name="inputMethod"]').forEach((radio) => {
 
 function shuffleNames() {
   const groupSize = parseInt(document.getElementById('groupSize').value);
-  if (isNaN(groupSize)) {
+  if (isNaN(groupSize) || groupSize <= 0) {
     alert('Please enter a valid group size.');
     return;
   }
@@ -42,34 +43,54 @@ function shuffleNames() {
     }
   }
 
-  // Shuffle the names array
-  names = names.sort(() => Math.random() - 0.5);
+  // Shuffle the names array 5 times for better randomization
+  for (let i = 0; i < 5; i++) {
+    names = shuffleArray(names);
+  }
 
-  // Divide into groups
+  // Divide into groups and select a leader for each group
   groups = [];
+  groupLeaders = []; // Reset group leaders
   for (let i = 0; i < names.length; i += groupSize) {
-    groups.push(names.slice(i, i + groupSize));
+    const group = names.slice(i, i + groupSize);
+    const leader = group[Math.floor(Math.random() * group.length)]; // Randomly select a leader
+    groups.push(group);
+    groupLeaders.push(leader);
   }
 
   displayGroups();
 }
 
-function displayGroups() {
-  const groupsContainer = document.getElementById('groupsContainer');
-  groupsContainer.innerHTML = '';
+// Helper function to shuffle an array
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]]; // Swap elements
+  }
+  return array;
+}
 
+function displayGroups() {
+  const groupsTableBody = document.getElementById('groupsTableBody');
+  groupsTableBody.innerHTML = ''; // Clear previous results
+
+  // Add rows for each group
   groups.forEach((group, index) => {
-    const groupDiv = document.createElement('div');
-    groupDiv.className = 'col-md-4 group';
-    groupDiv.innerHTML = `<strong>Group ${index + 1}:</strong><br>${group.join('<br>')}`;
-    groupsContainer.appendChild(groupDiv);
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>Group ${index + 1}</td>
+      <td>${groupLeaders[index]}</td>
+      <td>${group.join(', ')}</td>
+    `;
+    groupsTableBody.appendChild(row);
   });
 }
 
 function reset() {
   names = [];
   groups = [];
-  document.getElementById('groupsContainer').innerHTML = '';
+  groupLeaders = [];
+  document.getElementById('groupsTableBody').innerHTML = '';
   document.getElementById('fileInput').value = '';
   document.getElementById('nameInput').value = '';
 }
@@ -80,28 +101,47 @@ function saveGroups() {
     return;
   }
 
-  // Create a new PDF instance
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
+  try {
+    // Create a new PDF instance
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
 
-  // Set initial position for content
-  let yPos = 20;
+    // Add a title to the PDF
+    doc.setFontSize(18);
+    doc.text("Shuffled Groups", 10, 10);
 
-  // Add a title to the PDF
-  doc.setFontSize(18);
-  doc.text("Shuffled Groups", 10, yPos);
-  yPos += 10;
+    // Prepare data for the table
+    const tableData = groups.map((group, index) => {
+      return [`Group ${index + 1}`, groupLeaders[index], group.join(', ')];
+    });
 
-  // Add each group to the PDF
-  doc.setFontSize(12);
-  groups.forEach((group, index) => {
-    const groupText = `Group ${index + 1}: ${group.join(', ')}`;
-    doc.text(groupText, 10, yPos);
-    yPos += 10; // Move down for the next group
-  });
+    // Add the table to the PDF
+    doc.autoTable({
+      startY: 20, // Start below the title
+      head: [['Group', 'Leader', 'Members']], // Table header
+      body: tableData, // Table body
+      theme: 'grid', // Add borders to cells
+      styles: {
+        fontSize: 12,
+        cellPadding: 5,
+        valign: 'middle',
+        halign: 'left',
+      },
+      headStyles: {
+        fillColor: '#007bff', // Blue header
+        textColor: '#ffffff', // White text
+      },
+      alternateRowStyles: {
+        fillColor: '#f1f1f1', // Light gray for alternate rows
+      },
+    });
 
-  // Save the PDF
-  doc.save("shuffled_groups.pdf");
+    // Save the PDF
+    doc.save("shuffled_groups.pdf");
+  } catch (error) {
+    console.error('Error generating PDF:', error);
+    alert('Failed to generate PDF. Please try again.');
+  }
 }
 
 // Handle file upload
@@ -111,9 +151,17 @@ document.getElementById('fileInput').addEventListener('change', function (event)
 
   const reader = new FileReader();
   reader.onload = function (e) {
-    const content = e.target.result;
-    names = content.split('\n').map(name => name.trim()).filter(name => name);
-    alert('Names uploaded successfully!');
+    try {
+      const content = e.target.result;
+      names = content.split('\n').map(name => name.trim()).filter(name => name);
+      alert('Names uploaded successfully!');
+    } catch (error) {
+      console.error('Error reading file:', error);
+      alert('Failed to read file. Please ensure it is a valid text file.');
+    }
+  };
+  reader.onerror = function () {
+    alert('Error reading file. Please try again.');
   };
   reader.readAsText(file);
 });
