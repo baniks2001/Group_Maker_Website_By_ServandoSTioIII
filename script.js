@@ -22,6 +22,16 @@ document.querySelectorAll('input[name="inputMethod"]').forEach((radio) => {
   });
 });
 
+// Toggle leader input section
+document.getElementById('addLeaderCheckbox').addEventListener('change', (e) => {
+  const leaderInputSection = document.getElementById('leaderInputSection');
+  if (e.target.checked) {
+    leaderInputSection.classList.remove('d-none');
+  } else {
+    leaderInputSection.classList.add('d-none');
+  }
+});
+
 async function shuffleNames() {
   const groupSize = parseInt(document.getElementById('groupSize').value);
   if (isNaN(groupSize) || groupSize <= 0) {
@@ -84,14 +94,27 @@ async function shuffleNames() {
     names = shuffleArray(names);
   }
 
-  // Divide into groups and select a leader for each group
+  // Divide into groups and select a leader for each group if enabled
   groups = [];
   groupLeaders = []; // Reset group leaders
+  const addLeader = document.getElementById('addLeaderCheckbox').checked;
+  const leaderTitle = document.getElementById('leaderTitle').value;
+  const numLeaders = parseInt(document.getElementById('numLeaders').value);
+
   for (let i = 0; i < names.length; i += groupSize) {
     const group = names.slice(i, i + groupSize);
-    const leader = group[Math.floor(Math.random() * group.length)]; // Randomly select a leader
     groups.push(group);
-    groupLeaders.push(leader);
+
+    if (addLeader) {
+      const leaders = [];
+      for (let j = 0; j < numLeaders && j < group.length; j++) {
+        const leader = group[Math.floor(Math.random() * group.length)];
+        leaders.push(leader);
+      }
+      groupLeaders.push(leaders.join(', '));
+    } else {
+      groupLeaders.push(''); // No leader
+    }
   }
 
   displayGroups();
@@ -129,6 +152,8 @@ function reset() {
   document.getElementById('groupsTableBody').innerHTML = '';
   document.getElementById('fileInput').value = '';
   document.getElementById('nameInput').value = '';
+  document.getElementById('addLeaderCheckbox').checked = false;
+  document.getElementById('leaderInputSection').classList.add('d-none');
 }
 
 function saveGroups() {
