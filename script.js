@@ -107,8 +107,10 @@ async function shuffleNames() {
 
     if (addLeader) {
       const leaders = [];
+      const remainingMembers = [...group]; // Copy of group to avoid modifying the original
       for (let j = 0; j < numLeaders && j < group.length; j++) {
-        const leader = group[Math.floor(Math.random() * group.length)];
+        const leaderIndex = Math.floor(Math.random() * remainingMembers.length);
+        const leader = remainingMembers.splice(leaderIndex, 1)[0]; // Remove leader from members
         leaders.push(leader);
       }
       groupLeaders.push(leaders.join(', '));
@@ -134,15 +136,27 @@ function displayGroups() {
   groupsTableBody.innerHTML = ''; // Clear previous results
 
   // Add rows for each group
+  const addLeader = document.getElementById('addLeaderCheckbox').checked;
+  const leaderTitle = document.getElementById('leaderTitle').value;
+
   groups.forEach((group, index) => {
     const row = document.createElement('tr');
+    const leaderCell = addLeader ? `<td>${groupLeaders[index]}</td>` : '';
     row.innerHTML = `
       <td>Group ${index + 1}</td>
-      <td>${groupLeaders[index]}</td>
+      ${leaderCell}
       <td>${group.join(', ')}</td>
     `;
     groupsTableBody.appendChild(row);
   });
+
+  // Hide or show the leader column in the table header
+  const tableHeader = document.querySelector('#groupsContainer thead tr');
+  tableHeader.innerHTML = `
+    <th>Group</th>
+    ${addLeader ? `<th>${leaderTitle}</th>` : ''}
+    <th>Members</th>
+  `;
 }
 
 function reset() {
@@ -154,6 +168,11 @@ function reset() {
   document.getElementById('nameInput').value = '';
   document.getElementById('addLeaderCheckbox').checked = false;
   document.getElementById('leaderInputSection').classList.add('d-none');
+  document.querySelector('#groupsContainer thead tr').innerHTML = `
+    <th>Group</th>
+    <th>Leader</th>
+    <th>Members</th>
+  `;
 }
 
 function saveGroups() {
@@ -172,14 +191,15 @@ function saveGroups() {
     doc.text("Shuffled Groups", 10, 10);
 
     // Prepare data for the table
+    const addLeader = document.getElementById('addLeaderCheckbox').checked;
     const tableData = groups.map((group, index) => {
-      return [`Group ${index + 1}`, groupLeaders[index], group.join(', ')];
+      return [`Group ${index + 1}`, addLeader ? groupLeaders[index] : '', group.join(', ')];
     });
 
     // Add the table to the PDF
     doc.autoTable({
       startY: 20, // Start below the title
-      head: [['Group', 'Leader', 'Members']], // Table header
+      head: [['Group', addLeader ? 'Leader' : '', 'Members']], // Table header
       body: tableData, // Table body
       theme: 'grid', // Add borders to cells
       styles: {
