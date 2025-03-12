@@ -50,6 +50,21 @@
               <label for="groupSize" class="form-label">Group Size</label>
               <input type="number" class="form-control" id="groupSize" min="1" value="2">
             </div>
+            <!-- Add Leader Checkbox and Inputs -->
+            <div class="mb-3">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="addLeaderCheckbox">
+                <label class="form-check-label" for="addLeaderCheckbox">
+                  Add Leader to Groups
+                </label>
+              </div>
+              <div class="mt-2 d-none" id="leaderInputSection">
+                <label for="leaderTitle" class="form-label">Leader Title</label>
+                <input type="text" class="form-control" id="leaderTitle" value="Leader">
+                <label for="numLeaders" class="form-label mt-2">Number of Leaders per Group</label>
+                <input type="number" class="form-control" id="numLeaders" min="1" value="1">
+              </div>
+            </div>
             <!-- Buttons -->
             <div class="d-grid gap-2 d-md-flex justify-content-md-center">
               <button id="shuffleBtn" class="btn btn-primary">Shuffle</button>
