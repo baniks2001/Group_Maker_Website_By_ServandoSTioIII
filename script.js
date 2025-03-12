@@ -190,16 +190,22 @@ function saveGroups() {
     doc.setFontSize(18);
     doc.text("Shuffled Groups", 10, 10);
 
-    // Prepare data for the table
+    // Check if "Add Leader" is enabled
     const addLeader = document.getElementById('addLeaderCheckbox').checked;
+    const leaderTitle = document.getElementById('leaderTitle').value;
+
+    // Prepare data for the table
     const tableData = groups.map((group, index) => {
       return [`Group ${index + 1}`, addLeader ? groupLeaders[index] : '', group.join(', ')];
     });
 
+    // Define the table header dynamically
+    const tableHeader = ['Group', addLeader ? leaderTitle : '', 'Members'];
+
     // Add the table to the PDF
     doc.autoTable({
       startY: 20, // Start below the title
-      head: [['Group', addLeader ? 'Leader' : '', 'Members']], // Table header
+      head: [tableHeader], // Dynamic table header
       body: tableData, // Table body
       theme: 'grid', // Add borders to cells
       styles: {
